@@ -46,9 +46,6 @@ sudo dnf install -y chromium
 ```bash
 sudo zypper install -y chromium
 ```
-
-> También funciona con Chrome, Brave, Vivaldi o Edge si ya los tienes.
-
 ---
 
 ## Probar al instante
