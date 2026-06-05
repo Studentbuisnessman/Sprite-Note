@@ -1,4 +1,8 @@
-# clawd-note
+# Clawdnote — companion local de notas, tareas y fechas
+
+Tu compañero local de notas, tareas y fechas, con estética basada en terminal.
+Todo es **local**: tus datos se guardan en tu equipo (`localStorage`), sin
+servidor. Corre en **Chromium** —
 Clawdnote es un mini notion para Linux, pero mas sencillo y con varios presets visuales. basado en la mascota "Claw'd" de anthropic.
 # Tutorial — Instalar Clawdnote con Chromium (sin npm, sin Electron)
 
@@ -31,7 +35,7 @@ sudo dnf install -y chromium
 sudo zypper install -y chromium
 ```
 
-> También funciona con Chrome, Brave, Vivaldi o Edge si ya los tienes instalados.
+> Unico requisito
 
 ---
 
@@ -43,10 +47,7 @@ cd ~/Downloads/clawdnote-app
 clawdnote
 ```
 
-Eso es todo. El script:
-- Copia la app a `~/.local/share/clawdnote-app`
-- Crea el comando `clawdnote` en `~/.local/bin`
-- Registra el ícono y la entrada en el menú de aplicaciones
+Eso es todo. ahora podras ejecutarlo en tu sistema usando el comando "clawdnote"
 
 ---
 
