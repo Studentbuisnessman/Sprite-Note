@@ -820,12 +820,17 @@ const App = {
     this._renderGradeCard($('habits-grade-card'));
     this._renderWeekStrip($('habits-week'));
     this._renderHabitList();
+    this._renderWeeklyGoalList();
   },
 
   _wireHabits() {
     const input = $('habit-input');
     if (input) input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { this.addHabit(e.target.value); e.target.value = ''; }
+    });
+    const wgInput = $('weekly-goal-input');
+    if (wgInput) wgInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { this.addWeeklyGoal(e.target.value); e.target.value = ''; }
     });
     $('habits-eval-btn')?.addEventListener('click', () => this.openEval());
     $('habits-advice-btn')?.addEventListener('click', () => this.askGeminiAboutHabits());
@@ -907,6 +912,76 @@ const App = {
     clawd.setState('coffee');
     if (this.currentView !== 'habits') this.navigate('habits');
     else this.renderHabits();
+  },
+
+  addWeeklyGoal(text) {
+    text = (text || '').trim();
+    if (!text) return;
+    Store.weeklyGoals.add(text);
+    Toast.show('info', 'meta semanal', 'agregada: ' + escHtml(text));
+    clawd.setState('idea');
+    if (this.currentView === 'habits') this._renderWeeklyGoalList();
+  },
+
+  _renderWeeklyGoalList() {
+    const list = $('weekly-goals-list');
+    if (!list) return;
+    const goals = Store.weeklyGoals.list();
+    const weekKey = Store.weeklyLog._weekKey();
+
+    list.innerHTML = goals.length
+      ? goals.map(g => {
+          const done = Store.weeklyLog.isDone(weekKey, g.id);
+          return `<div class="habit-row ${done ? 'done' : ''}" data-id="${g.id}">
+            <span class="hb-check ${done ? 'done' : ''}">${done ? '✓' : ''}</span>
+            <span class="hb-text">${escHtml(g.text)}</span>
+            <button class="hb-del" data-id="${g.id}" title="eliminar">×</button>
+          </div>`;
+        }).join('')
+      : '<div class="empty-state" style="padding:8px 0"><span class="es-glyph" style="font-size:16px">◈</span>sin metas semanales — agrega una arriba</div>';
+
+    list.querySelectorAll('.habit-row').forEach(row => {
+      row.querySelector('.hb-check').addEventListener('click', () => this._toggleWeeklyGoal(row.dataset.id));
+      row.querySelector('.hb-text').addEventListener('click', () => this._toggleWeeklyGoal(row.dataset.id));
+    });
+    list.querySelectorAll('.hb-del').forEach(btn =>
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const ok = await this.confirm({ title: 'Eliminar meta semanal', body: '¿Eliminar esta meta semanal?', okText: 'Eliminar', danger: true });
+        if (ok) { Store.weeklyGoals.remove(btn.dataset.id); this._renderWeeklyGoalList(); this._updateCalendarWeeklyAccum(); }
+      }));
+
+    const prog = $('weekly-goal-progress');
+    if (prog) {
+      const total = goals.length;
+      const done = total ? Store.weeklyLog.doneCount(weekKey) : 0;
+      prog.innerHTML = total
+        ? `<div class="wgp-bar"><div class="wgp-fill" style="width:${Math.round(done/total*100)}%"></div></div>
+           <span class="wgp-label">${done}/${total} esta semana</span>`
+        : '';
+    }
+  },
+
+  _toggleWeeklyGoal(id) {
+    const weekKey = Store.weeklyLog._weekKey();
+    Store.weeklyLog.toggle(weekKey, id);
+    if (this.currentView === 'habits') this._renderWeeklyGoalList();
+    this._updateCalendarWeeklyAccum();
+  },
+
+  _updateCalendarWeeklyAccum() {
+    if (this.currentView === 'calendar') this.renderCalendar();
+    // también actualiza el acumulado si está en vista de hábitos
+    const weekKey = Store.weeklyLog._weekKey();
+    const wPct = Store.weeklyLog.completionPct(weekKey);
+    const grades = Store.log.weekGrades().map(d => d.grade);
+    const accum = Store.log.weeklyAggregate(grades, wPct);
+    const accEl = $('cal-week-accum');
+    if (accEl) {
+      const meta = this._gradeMeta(accum);
+      accEl.textContent = accum ? accum + ' · ' + meta.label : '—';
+      accEl.className = 'ws-accum ' + (accum ? meta.cls : 'g-_');
+    }
   },
 
   // ── Tarjeta de calificación del día ───────────────────────────
@@ -1039,7 +1114,9 @@ const App = {
     this._renderCalGrid();
     this._renderWeekStrip($('cal-week'));
     const grades = Store.log.weekGrades().map(d => d.grade);
-    const accum = Store.log.aggregate(grades);
+    const weekKey = Store.weeklyLog._weekKey();
+    const wPct = Store.weeklyLog.completionPct(weekKey);
+    const accum = Store.log.weeklyAggregate(grades, wPct);
     const meta = this._gradeMeta(accum);
     const accEl = $('cal-week-accum');
     accEl.textContent = accum ? accum + ' · ' + meta.label : '—';
@@ -1164,6 +1241,15 @@ const App = {
         `modelo → <b>${escHtml(id)}</b>${changed && familyChanged ? '<br><span style="color:var(--text-faint)">conversaciones reiniciadas</span>' : ''}`);
     });
 
+    // dropdown de nivel de razonamiento
+    const levelSel = $('ai-level-select');
+    if (levelSel) levelSel.addEventListener('change', () => {
+      if (Gemini.setLevel(levelSel.value)) {
+        Toast.show('ai', 'gemini · nivel', `razonamiento → <b>${escHtml(levelSel.value)}</b>`);
+        if (this.currentView === 'ai') this._aiSyncModelSelect();
+      }
+    });
+
     // foto de perfil del usuario (cabecera + clic en burbujas propias)
     const fileInput = $('ai-avatar-file');
     const meBtn = $('ai-me-av');
@@ -1239,7 +1325,7 @@ const App = {
     return { id, cur, familyChanged, changed };
   },
 
-  // Sincroniza el dropdown de modelo y el indicador de nivel/herramientas.
+  // Sincroniza los dropdowns de modelo y nivel, y el indicador de herramientas.
   _aiSyncModelSelect() {
     const cfg = Gemini.getConfig();
     const sel = $('ai-model-select');
@@ -1251,8 +1337,17 @@ const App = {
       sel.innerHTML = opts.join('');
       sel.value = cfg.model;
     }
+    const levelSel = $('ai-level-select');
+    if (levelSel) {
+      if (!levelSel.children.length) {
+        const labelMap = { minimal: 'minimal', low: 'low', medium: 'medium', high: 'high' };
+        levelSel.innerHTML = Gemini.validLevels()
+          .map(l => `<option value="${l}">${labelMap[l] || l}</option>`).join('');
+      }
+      levelSel.value = cfg.level;
+    }
     const meta = $('ai-model-meta');
-    if (meta) meta.textContent = '· ' + cfg.level + (cfg.toolsEnabled ? ' · 🛠️' : '');
+    if (meta) meta.textContent = cfg.toolsEnabled ? '· 🛠️' : '';
   },
 
   // HTML del avatar para una fila de chat (modo personaje / WhatsApp).
@@ -1901,7 +1996,7 @@ const App = {
       {
         sel: '#theme-switch',
         title: 'Temas y modo CRT',
-        text: '<b>11 temas</b> phosphor. El arranque <b>recuerda el último</b> que usaste. ¿Te molesta el efecto de monitor antiguo? Apágalo en <b>CRT MODE</b>.',
+        text: '<b>12 temas</b> phosphor (incluyendo Catppuccin). El arranque <b>recuerda el último</b> que usaste. ¿Te molesta el efecto de monitor antiguo? Apágalo en <b>CRT MODE</b>.',
       },
       {
         before: () => this.navigate('home'),

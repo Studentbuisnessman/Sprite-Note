@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spritenote</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
@@ -22,7 +23,10 @@
     <!-- Claw'd protagonista -->
     <div id="clawd-hero-wrap">
       <img id="clawd-canvas" src="assets/clawd-laptop.gif" alt="Claw'd" title="¡pícame!">
-      <div class="clawd-name">SPRITENOTE</div>
+      <div class="clawd-name-row">
+        <img id="sb-logo" class="sb-logo" src="assets/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="clawd-name">SPRITENOTE</div>
+      </div>
       <div class="clawd-mood-label" id="sb-sprite-mood">coding</div>
     </div>
 
@@ -59,6 +63,7 @@
         <button class="theme-dot" data-t="dos" title="dos blue"></button>
         <button class="theme-dot" data-t="matrix" title="matrix"></button>
         <button class="theme-dot" data-t="lime" title="lime inv"></button>
+        <button class="theme-dot" data-t="catppuccin" title="catppuccin"></button>
       </div>
       <button id="crt-toggle" type="button"><span>CRT MODE</span><span id="crt-label">● ON</span></button>
     </div>
@@ -199,6 +204,18 @@
         <span class="hint">Enter ↵</span>
       </div>
       <div class="habit-list" id="habits-list"></div>
+
+      <div class="habits-section-divider">
+        <span>◈ hábitos / metas semanales</span>
+        <span class="hsd-sub">no afectan la calificación diaria · sí al recuento total de la semana</span>
+      </div>
+      <div class="add-row">
+        <span class="prompt-sym">+</span>
+        <input type="text" id="weekly-goal-input" placeholder="nueva meta semanal (ej. ir al gimnasio 4 veces, terminar libro)..." autocomplete="off">
+        <span class="hint">Enter ↵</span>
+      </div>
+      <div class="habit-list" id="weekly-goals-list"></div>
+      <div class="weekly-goal-progress" id="weekly-goal-progress"></div>
     </section>
 
     <!-- CALENDARIO -->
@@ -237,6 +254,7 @@
         <span class="view-title">Gemini</span>
         <span class="view-sub ai-head">
           <select id="ai-model-select" class="ai-model-select" title="modelo de IA"></select>
+          <select id="ai-level-select" class="ai-model-select" title="nivel de razonamiento"></select>
           <span id="ai-model-meta" class="ai-model-meta"></span>
         </span>
       </div>

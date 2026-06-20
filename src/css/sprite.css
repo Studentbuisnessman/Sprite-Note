@@ -196,6 +196,15 @@ button { cursor: pointer; }
   object-fit: contain;
   cursor: pointer;
 }
+.clawd-name-row {
+  display: flex; align-items: center; gap: 6px;
+}
+.sb-logo {
+  width: 22px; height: 22px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .clawd-name {
   font-size: 13px;
   font-weight: 600;
@@ -311,7 +320,7 @@ button { cursor: pointer; }
 .theme-dot.active { outline: 1px solid var(--accent); outline-offset: 2px; }
 
 .theme-dot[data-t="ember"]      { --td-bg:#0e0b09; --td-accent:#e08858; }
-.theme-dot[data-t="catppuccin"] { --td-bg:#1e1e2e; --td-accent:#cba6f7; }
+.theme-dot[data-t="catppuccin"] { --td-bg:#1e1e2e; --td-accent:#cba6f7; border-color: rgba(203,166,247,0.5); }
 .theme-dot[data-t="dracula"]    { --td-bg:#282a36; --td-accent:#bd93f9; }
 .theme-dot[data-t="gruvbox"]    { --td-bg:#282828; --td-accent:#fe8019; }
 .theme-dot[data-t="tokyonight"] { --td-bg:#1a1b26; --td-accent:#7aa2f7; }
@@ -1307,6 +1316,40 @@ body.compact-force #toast-wrap { bottom: 36px !important; right: 10px !important
 }
 .ws-day.today .wd-name { color: var(--accent); }
 
+/* divisor de sección de metas semanales */
+.habits-section-divider {
+  display: flex; flex-direction: column; gap: 3px;
+  border-top: 1px solid var(--border);
+  padding: 14px 0 6px;
+  margin-top: 18px;
+}
+.habits-section-divider > span:first-child {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent-2);
+}
+.hsd-sub {
+  font-size: 10px; color: var(--text-faint); letter-spacing: .4px;
+}
+
+/* barra de progreso de metas semanales */
+.weekly-goal-progress {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; padding: 0 2px;
+}
+.wgp-bar {
+  flex: 1; height: 6px; background: var(--surface-2); border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.wgp-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--accent-2);
+  box-shadow: 0 0 6px var(--accent-2);
+  transition: width .35s ease;
+}
+.wgp-label {
+  font-size: 11px; color: var(--text-dim); white-space: nowrap;
+}
+
 /* lista de hábitos */
 .habit-list { display: flex; flex-direction: column; gap: 3px; }
 .habit-row {
@@ -1620,6 +1663,7 @@ body.crt-off::after { opacity: 0; }
 .theme-dot[data-t="dos"]{--td-bg:#0000a8;--td-accent:#ffff55}
 .theme-dot[data-t="matrix"]{--td-bg:#000500;--td-accent:#00ff41}
 .theme-dot[data-t="lime"]{--td-bg:#b6ff00;--td-accent:#0a1500}
+.theme-dot[data-t="catppuccin"]{--td-bg:#1e1e2e;--td-accent:#cba6f7;border-color:rgba(203,166,247,.5)}
 #crt-toggle {
   margin-top: 11px; width: 100%; background: transparent; border: 1px solid var(--border-st);
   color: var(--text-dim); font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
