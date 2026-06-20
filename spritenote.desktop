@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Spritenote
+Comment=Notas, tareas y fechas — local, estilo terminal
+Exec=spritenote
+Icon=spritenote
+Terminal=false
+Categories=Utility;
+Keywords=notes;tasks;terminal;spritenote;
+StartupWMClass=Spritenote
