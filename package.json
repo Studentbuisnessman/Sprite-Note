@@ -1,0 +1,22 @@
+{
+  "name": "spritenote",
+  "productName": "Spritenote",
+  "version": "1.0.2",
+  "description": "Spritenote — companion local de notas, tareas, fechas y hábitos (estilo terminal CRT). Corre como app sobre Chromium en Linux y Windows, sin Node ni Electron.",
+  "license": "MIT",
+  "scripts": {
+    "start": "./spritenote-launch.sh",
+    "start:linux": "./spritenote-launch.sh",
+    "start:windows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./spritenote-launch.ps1"
+  },
+  "keywords": [
+    "notes",
+    "tasks",
+    "terminal",
+    "neofetch",
+    "chromium",
+    "spritenote",
+    "windows",
+    "localstorage"
+  ]
+}

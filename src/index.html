@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="vapor">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spritenote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/sprite.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ════════ SIDEBAR ════════ -->
+  <aside id="sidebar">
+    <div class="sb-window-title">
+      <span class="tty-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>~/spritenote — tty1</span>
+    </div>
+
+    <!-- Claw'd protagonista -->
+    <div id="clawd-hero-wrap">
+      <img id="clawd-canvas" src="assets/clawd-laptop.gif" alt="Claw'd" title="¡pícame!">
+      <div class="clawd-name">SPRITENOTE</div>
+      <div class="clawd-mood-label" id="sb-sprite-mood">coding</div>
+    </div>
+
+    <hr class="sb-divider">
+
+    <!-- Neofetch -->
+    <div id="neofetch-wrap">
+      <div class="neofetch" id="neofetch"></div>
+    </div>
+
+    <hr class="sb-divider">
+
+    <nav id="nav">
+      <button class="nav-btn active" data-view="home"><span class="nav-icon">⌂</span><span>inicio</span><span class="nav-key">1</span></button>
+      <button class="nav-btn" data-view="notes"><span class="nav-icon">▤</span><span>notas</span><span class="nav-key">2</span></button>
+      <button class="nav-btn" data-view="tasks"><span class="nav-icon">◇</span><span>tareas</span><span class="nav-key">3</span></button>
+      <button class="nav-btn" data-view="habits"><span class="nav-icon">❉</span><span>hábitos</span><span class="nav-key">4</span></button>
+      <button class="nav-btn" data-view="dates"><span class="nav-icon">▣</span><span>fechas</span><span class="nav-key">5</span></button>
+      <button class="nav-btn" data-view="calendar"><span class="nav-icon">▦</span><span>calendario</span><span class="nav-key">6</span></button>
+      <button class="nav-btn" data-view="ai"><span class="nav-icon">✦</span><span>gemini</span><span class="nav-key">7</span></button>
+    </nav>
+
+    <div id="theme-switch">
+      <div class="theme-label"><span>◆ PHOSPHOR · TEMA</span><span id="theme-current-label">vaporwave</span></div>
+      <div class="theme-dots">
+        <button class="theme-dot" data-t="green" title="green"></button>
+        <button class="theme-dot" data-t="amber" title="amber"></button>
+        <button class="theme-dot" data-t="mono" title="ibm 5151"></button>
+        <button class="theme-dot" data-t="cyan" title="ice"></button>
+        <button class="theme-dot" data-t="ember" title="ember"></button>
+        <button class="theme-dot" data-t="synth" title="synthwave"></button>
+        <button class="theme-dot" data-t="vapor" title="vaporwave"></button>
+        <button class="theme-dot" data-t="outrun" title="outrun"></button>
+        <button class="theme-dot" data-t="dos" title="dos blue"></button>
+        <button class="theme-dot" data-t="matrix" title="matrix"></button>
+        <button class="theme-dot" data-t="lime" title="lime inv"></button>
+      </div>
+      <button id="crt-toggle" type="button"><span>CRT MODE</span><span id="crt-label">● ON</span></button>
+    </div>
+  </aside>
+
+  <!-- ════════ MAIN ════════ -->
+  <main id="main">
+
+    <!-- INICIO -->
+    <section class="view active" id="view-home">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/inicio</span></span>
+        <span class="view-sub">presiona <b>:</b> para comandos · 1-7 para vistas</span>
+      </div>
+
+      <div class="home-banner">
+        <div class="clawd-hero">
+          <img id="clawd-hero-gif" class="clawd-hero-gif" src="assets/clawd-celebracion.gif" alt="Claw'd">
+          <div class="clawd-phrase" id="clawd-phrase" contenteditable="true" spellcheck="false" data-ph="escribe una frase..."></div>
+        </div>
+        <div class="home-greet">
+          <h2 id="home-greet-title">Buen día, estudiante</h2>
+          <div class="greet-sub">tu espacio local de notas, tareas y fechas — todo guardado en este equipo.</div>
+          <div class="quote-box" id="home-quote"></div>
+        </div>
+      </div>
+
+      <div class="system-monitor tbox">
+        <span class="tbox-title">SYSTEM MONITOR — sprite-top</span>
+        <div class="sys-grid">
+          <section class="sys-meter sys-cpu" aria-label="CPU monitor">
+            <div class="sys-head"><span>CPU</span><b id="sys-cpu-pct">--%</b></div>
+            <div class="sys-bars" id="sys-cpu-bars"></div>
+          </section>
+          <section class="sys-meter sys-osc" aria-label="Osciloscope monitor">
+            <div class="sys-head"><span>OSCILOSCOPE</span><b id="sys-osc-pct">--%</b></div>
+            <svg class="oscilloscope" viewBox="0 0 320 76" preserveAspectRatio="none" role="img" aria-label="memory oscilloscope">
+              <line x1="0" y1="38" x2="320" y2="38" class="osc-axis"></line>
+              <line x1="164" y1="0" x2="164" y2="76" class="osc-axis osc-axis-v"></line>
+              <polyline id="sys-osc-line" points="0,38 320,38"></polyline>
+            </svg>
+          </section>
+          <section class="sys-meter sys-netgrid" aria-label="Network vaporwave grid">
+            <div class="sys-head"><span>GRID</span><b id="sys-grid-rate">--K</b></div>
+            <div class="vapor-grid" id="sys-vapor-grid" aria-hidden="true">
+              <div class="grid-horizon"></div>
+              <div class="grid-plane grid-ceiling"></div>
+              <div class="grid-plane grid-floor"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="tbox">
+          <span class="tbox-title">tareas de hoy <span id="home-tasks-count" style="color:var(--text-faint)"></span></span>
+          <div class="tbox-body" id="home-tasks"></div>
+        </div>
+        <div class="tbox">
+          <span class="tbox-title">próximas fechas</span>
+          <div class="tbox-body" id="home-dates"></div>
+        </div>
+        <div class="tbox" style="grid-column:1/-1">
+          <span class="tbox-title">notas recientes</span>
+          <div class="tbox-body" id="home-notes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTAS -->
+    <section class="view" id="view-notes">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/notas</span></span>
+        <span class="view-title">Notas</span>
+        <span class="view-sub"><button class="btn btn-primary btn-sm" id="notes-new-btn">+ nueva</button></span>
+      </div>
+      <div class="notes-layout">
+        <div class="notes-list">
+          <div class="nl-head"><span>ARCHIVOS</span><span>md</span></div>
+          <div id="notes-list-items"></div>
+        </div>
+        <div class="note-pane" id="note-pane"></div>
+      </div>
+    </section>
+
+    <!-- TAREAS -->
+    <section class="view" id="view-tasks">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/tareas</span></span>
+        <span class="view-title">Tareas</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="tasks-progress-fill"></div></div>
+          <span class="progress-label" id="tasks-progress-label">0/0</span>
+        </div>
+      </div>
+      <div class="add-row">
+        <span class="prompt-sym">$</span>
+        <input type="text" id="task-input" placeholder="nueva tarea o recordatorio..." autocomplete="off">
+        <span class="hint">Enter ↵</span>
+      </div>
+      <div class="task-list" id="tasks-list"></div>
+    </section>
+
+    <!-- FECHAS -->
+    <section class="view" id="view-dates">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/fechas</span></span>
+        <span class="view-title">Fechas importantes</span>
+      </div>
+      <div class="date-form">
+        <input type="text" class="df-title" id="date-title-input" placeholder="evento (ej. examen final)..." autocomplete="off">
+        <input type="date" id="date-date-input">
+        <input type="text" id="date-note-input" placeholder="nota (opcional)..." autocomplete="off">
+        <button class="btn btn-primary" id="date-add-btn">agregar</button>
+      </div>
+      <div class="date-list" id="dates-list"></div>
+    </section>
+
+    <!-- MEJORAS DE HÁBITOS -->
+    <section class="view" id="view-habits">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/habitos</span></span>
+        <span class="view-title">Mejoras de hábitos</span>
+        <span class="view-sub"><button class="btn btn-sm" id="habits-advice-btn">consejo ✦</button> <button class="btn btn-primary btn-sm" id="habits-eval-btn">evaluar mi día ✦</button></span>
+      </div>
+
+      <div class="habits-top">
+        <div class="grade-card" id="habits-grade-card"></div>
+        <div class="habits-week-box">
+          <div class="hw-title">esta semana</div>
+          <div class="week-strip" id="habits-week"></div>
+        </div>
+      </div>
+
+      <div class="add-row">
+        <span class="prompt-sym">+</span>
+        <input type="text" id="habit-input" placeholder="nuevo hábito o meta diaria (ej. meditar 10 min)..." autocomplete="off">
+        <span class="hint">Enter ↵</span>
+      </div>
+      <div class="habit-list" id="habits-list"></div>
+    </section>
+
+    <!-- CALENDARIO -->
+    <section class="view" id="view-calendar">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/calendario</span></span>
+        <span class="view-title">Calendario</span>
+        <div class="cal-toolbar">
+          <button class="cal-nav" id="cal-prev" title="mes anterior">‹</button>
+          <span class="cal-month" id="cal-month-label">—</span>
+          <button class="cal-nav" id="cal-next" title="mes siguiente">›</button>
+          <button class="btn btn-sm" id="cal-today">hoy</button>
+        </div>
+      </div>
+
+      <div class="cal-grid" id="cal-grid"></div>
+
+      <div class="week-summary">
+        <div class="ws-head">
+          <span class="ws-title">calificación de la semana</span>
+          <span class="ws-accum" id="cal-week-accum">—</span>
+        </div>
+        <div class="week-strip" id="cal-week"></div>
+      </div>
+
+      <div class="tbox" style="margin-top:18px">
+        <span class="tbox-title">próximas fechas</span>
+        <div class="tbox-body" id="cal-upcoming"></div>
+      </div>
+    </section>
+
+    <!-- GEMINI / CHAT -->
+    <section class="view" id="view-ai">
+      <div class="view-header">
+        <span class="view-prompt"><span class="nf-prompt-user">user</span><span class="tilde">@</span>spritenote <span class="cmd">~/gemini</span></span>
+        <span class="view-title">Gemini</span>
+        <span class="view-sub ai-head">
+          <select id="ai-model-select" class="ai-model-select" title="modelo de IA"></select>
+          <span id="ai-model-meta" class="ai-model-meta"></span>
+        </span>
+      </div>
+
+      <!-- Aviso de configuración de API key (visible solo si no hay key) -->
+      <div class="ai-keybox" id="ai-keybox" hidden>
+        <div class="ai-keybox-title">┤ configurar API key ├</div>
+        <p>Para chatear con Gemini necesitas una API key de Google AI Studio.
+           Se guarda <b>solo en este equipo</b> (en el perfil local de la app),
+           nunca se sube a ningún lado.</p>
+        <ol>
+          <li>Obtén una key gratis en <span class="ai-link">aistudio.google.com/apikey</span></li>
+          <li>Escribe el comando: <code class="inline">:ai key &lt;tu_api_key&gt;</code></li>
+        </ol>
+      </div>
+
+      <div class="chat-wrap" id="ai-chat-wrap">
+        <div class="chat-topbar" id="ai-topbar">
+          <div class="persona-toggle" id="ai-persona" role="tablist" aria-label="modo de chat">
+            <button type="button" data-p="gemini" class="active">✦ Gemini</button>
+            <button type="button" data-p="character">🦀 Personaje</button>
+          </div>
+        </div>
+        <div class="chat-peerbar" id="ai-peerbar" hidden>
+          <div class="chat-peer" id="ai-peer">
+            <img class="peer-av" id="ai-peer-av" alt="">
+            <div class="peer-meta">
+              <span class="peer-name" id="ai-peer-name">Claw'd</span>
+              <span class="peer-sub">● en línea</span>
+            </div>
+          </div>
+          <button type="button" class="me-av-btn" id="ai-me-av" title="cambiar mi foto de perfil">
+            <img id="ai-me-av-img" alt="yo">
+            <span class="me-av-initial" id="ai-me-av-initial">?</span>
+          </button>
+          <input type="file" id="ai-avatar-file" accept="image/*" hidden>
+        </div>
+        <div class="chat-log" id="ai-log"></div>
+        <div class="chat-input-row">
+          <span class="prompt-sym">✦</span>
+          <textarea id="ai-input" rows="1" placeholder="pregúntale algo a Gemini... (Enter envía · Shift+Enter salta línea)" autocomplete="off" spellcheck="false"></textarea>
+          <button class="btn btn-primary btn-sm" id="ai-send">enviar ↵</button>
+        </div>
+        <div class="chat-foot">
+          <span id="ai-status">listo</span>
+          <span class="chat-foot-right">:ai key · :ai persona · :ai clear</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════ STATUS BAR ════════ -->
+  <div id="statusbar">
+    <div class="sb-seg mode" id="sb-mode">NORMAL</div>
+    <div class="sb-seg view" id="sb-view">inicio</div>
+    <div class="sb-spacer"></div>
+    <div class="sb-seg right clawd-mood" id="sb-clawd-mood">🦀 idle</div>
+    <div class="sb-seg right theme" id="sb-theme">ember</div>
+    <div class="sb-seg right clock" id="sb-clock">--:--</div>
+  </div>
+</div>
+
+<!-- command line (vim :) -->
+<div id="cmd-suggest"></div>
+<div id="cmdline">
+  <span class="cmd-prompt">:</span>
+  <span class="cmd-input-wrap">
+    <span id="cmd-ghost" aria-hidden="true"></span>
+    <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+  </span>
+  <span class="block-cursor"></span>
+</div>
+
+<!-- ════════ COMPACT VIEW (hyprland 4-tile) ════════ -->
+<div id="compact">
+  <div class="cp-header">
+    <div class="cp-title">SPRITENOTE</div>
+    <div class="cp-sub">companion · local</div>
+  </div>
+
+  <div class="cp-hero-row">
+    <div class="cp-sprite-wrap">
+      <img id="cp-sprite" class="cp-sprite" src="assets/clawd-laptop.gif" alt="Claw'd" title="¡pícame!">
+      <div class="cp-mood" id="cp-mood">coding</div>
+    </div>
+
+    <div class="cp-terminal">
+      <div class="cp-welcome"><span class="cp-prompt">&gt;</span> Welcome back, <span class="cp-user" id="cp-user">user</span><span class="block-cursor"></span></div>
+      <div class="cp-date" id="cp-date"></div>
+      <div class="cp-clock" id="cp-clock">00:00</div>
+    </div>
+  </div>
+
+  <!-- ventana de chat (aparece al enviar un prompt) -->
+  <div class="cp-chat-wrap" id="cp-chat-wrap">
+    <div class="cp-chat-head">
+      <span class="cpc-title">✦ gemini</span>
+      <button class="cpc-close" id="cp-chat-close" title="volver al reloj (Esc)">×</button>
+    </div>
+    <div class="cp-chat" id="cp-chat"></div>
+  </div>
+
+  <div class="cp-input-wrap">
+    <span class="cp-dollar">$</span>
+    <input type="text" id="cp-input" autocomplete="off" spellcheck="false" placeholder="pregúntale a Gemini...  (: para comandos)">
+    <button id="cp-send" title="Enter">↵</button>
+  </div>
+  <div class="cp-hints">escribe para chatear con Gemini · :tasks · :ai key &lt;key&gt; · :help</div>
+
+  <div class="cp-statusbar">
+    <span id="cp-mode-label">NORMAL</span>
+    <span class="cp-sb-sep">·</span>
+    <span>spritenote --watch</span>
+    <span class="cp-sb-right" id="cp-uptime">up 0m</span>
+  </div>
+</div>
+
+<!-- toasts -->
+<div id="toast-wrap"></div>
+
+<!-- ════════ CRT OVERLAYS + BOOT/POST ════════ -->
+<div id="cn-scan" class="crt-layer"></div>
+<div id="cn-grille" class="crt-layer"></div>
+<div id="cn-vig" class="crt-layer"></div>
+<div id="cn-bulge" class="crt-layer"></div>
+<div id="cn-flick" class="crt-layer"></div>
+<div id="cn-sweep" class="crt-layer"></div>
+<div id="boot-overlay" aria-live="polite">
+  <div id="cn-turnon"></div>
+  <div id="boot-lines"></div>
+  <span class="boot-cursor"></span>
+  <div class="boot-skip">[ click o cualquier tecla para saltar ]</div>
+</div>
+
+<!-- ════════ EVALUACIÓN DIARIA (Claw'd al centro) ════════ -->
+<div id="daily-eval" class="eval-overlay" hidden>
+  <div class="eval-card">
+    <button class="eval-close" id="eval-close" title="cerrar">×</button>
+    <div class="eval-head">checklist diario</div>
+    <div class="eval-date" id="eval-date"></div>
+    <img id="eval-clawd" class="eval-clawd" src="assets/clawd-idea.gif" alt="Claw'd">
+    <div class="eval-grade g-_" id="eval-grade">—</div>
+    <div class="eval-gradelabel" id="eval-gradelabel"></div>
+    <div class="eval-msg" id="eval-msg"></div>
+    <div class="eval-count" id="eval-count"></div>
+    <div class="eval-list" id="eval-list"></div>
+    <button class="btn btn-primary eval-done" id="eval-done">listo 🦀</button>
+  </div>
+</div>
+
+<script src="js/sysinfo.js"></script>
+<script src="js/store.js"></script>
+<script src="js/markdown.js"></script>
+<script src="js/themes.js"></script>
+<script src="js/sprite.js"></script>
+<script src="js/command.js"></script>
+<script src="js/gemini.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
