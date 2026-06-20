@@ -214,6 +214,10 @@ yay -S ttf-ibm-plex
     { id: 'hb5', text: 'Hábitos emocionales (meditar / journaling)' },
   ],
 
+  // ── METAS SEMANALES (no afectan calificación diaria; sí el total semanal) ──
+  weeklyGoals: [],
+  weeklyLog: {},
+
   // Registro diario: { 'YYYY-MM-DD': { done: [habitIds], grade: 'P'|'A'|'B'|'C'|'D' } }
   // Se siembran un par de días previos para que el calendario muestre ejemplo.
   log: {
@@ -260,6 +264,8 @@ const Store = {
     }
     // Migración: garantiza que existan las claves nuevas para datos viejos.
     if (!Array.isArray(this._data.habits)) this._data.habits = structuredClone(SEED.habits);
+    if (!Array.isArray(this._data.weeklyGoals)) this._data.weeklyGoals = [];
+    if (!this._data.weeklyLog || typeof this._data.weeklyLog !== 'object') this._data.weeklyLog = {};
     if (!this._data.log || typeof this._data.log !== 'object') this._data.log = {};
     if (!Array.isArray(this._data.notes)) this._data.notes = [];
     // Migración: siembra la nota "Guía rápida de Markdown" una sola vez,
@@ -461,6 +467,87 @@ const Store = {
       const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
       const r = Math.round(avg);
       return ['', 'D', 'C', 'B', 'A', 'P'][r] || null;
+    },
+
+    // Calificación semanal combinando hábitos diarios + metas semanales (70/30).
+    weeklyAggregate(grades, weeklyGoalPct = null) {
+      const pts = { P: 5, A: 4, B: 3, C: 2, D: 1 };
+      const vals = grades.filter(g => g && pts[g]).map(g => pts[g]);
+      if (!vals.length) {
+        if (weeklyGoalPct === null) return null;
+        const wPts = Math.max(1, Math.round(weeklyGoalPct * 5));
+        return ['', 'D', 'C', 'B', 'A', 'P'][wPts] || null;
+      }
+      const dailyAvg = vals.reduce((a, b) => a + b, 0) / vals.length;
+      if (weeklyGoalPct === null) {
+        return ['', 'D', 'C', 'B', 'A', 'P'][Math.round(dailyAvg)] || null;
+      }
+      const combined = dailyAvg * 0.7 + (weeklyGoalPct * 5) * 0.3;
+      return ['', 'D', 'C', 'B', 'A', 'P'][Math.round(combined)] || null;
+    },
+  },
+
+  // ── METAS SEMANALES ────────────────────────────────────
+  weeklyGoals: {
+    list() { return Store._load().weeklyGoals || []; },
+    add(text) {
+      text = (text || '').trim();
+      if (!text) return null;
+      const d = Store._load();
+      if (!d.weeklyGoals) d.weeklyGoals = [];
+      const g = { id: Store._id(), text };
+      d.weeklyGoals.push(g);
+      Store._save();
+      return g;
+    },
+    remove(id) {
+      const d = Store._load();
+      if (!d.weeklyGoals) return;
+      d.weeklyGoals = d.weeklyGoals.filter(x => x.id !== id);
+      if (d.weeklyLog) {
+        Object.values(d.weeklyLog).forEach(e => {
+          if (e && Array.isArray(e.done)) e.done = e.done.filter(x => x !== id);
+        });
+      }
+      Store._save();
+    },
+  },
+
+  // ── REGISTRO DE METAS SEMANALES ────────────────────────
+  weeklyLog: {
+    _weekKey(iso = isoToday()) {
+      const base = new Date(iso + 'T00:00:00');
+      const dow = (base.getDay() + 6) % 7;
+      const monday = new Date(base);
+      monday.setDate(base.getDate() - dow);
+      return `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,'0')}-${String(monday.getDate()).padStart(2,'0')}`;
+    },
+    get(weekKey) {
+      const d = Store._load();
+      if (!d.weeklyLog) d.weeklyLog = {};
+      const e = d.weeklyLog[weekKey];
+      return e ? { done: e.done.slice() } : { done: [] };
+    },
+    toggle(weekKey, goalId) {
+      const d = Store._load();
+      if (!d.weeklyLog) d.weeklyLog = {};
+      const e = d.weeklyLog[weekKey] || (d.weeklyLog[weekKey] = { done: [] });
+      const i = e.done.indexOf(goalId);
+      if (i >= 0) e.done.splice(i, 1);
+      else e.done.push(goalId);
+      Store._save();
+      return e;
+    },
+    isDone(weekKey, goalId) { return this.get(weekKey).done.includes(goalId); },
+    doneCount(weekKey) {
+      const goals = Store.weeklyGoals.list();
+      return this.get(weekKey).done.filter(id => goals.some(g => g.id === id)).length;
+    },
+    completionPct(weekKey) {
+      const goals = Store.weeklyGoals.list();
+      if (!goals.length) return null;
+      const done = this.doneCount(weekKey);
+      return done / goals.length;
     },
   },
 };

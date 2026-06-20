@@ -2,7 +2,7 @@
 // 11 temas de alto contraste: green, amber, mono, cyan, ember, synthwave,
 // vaporwave, outrun, dos blue, matrix y lime inverted.
 
-const THEMES = ['green', 'amber', 'mono', 'cyan', 'ember', 'synth', 'vapor', 'outrun', 'dos', 'matrix', 'lime'];
+const THEMES = ['green', 'amber', 'mono', 'cyan', 'ember', 'synth', 'vapor', 'outrun', 'dos', 'matrix', 'lime', 'catppuccin'];
 const THEME_LABEL = {
   green: 'green',
   amber: 'amber',
@@ -15,10 +15,11 @@ const THEME_LABEL = {
   dos: 'dos blue',
   matrix: 'matrix',
   lime: 'lime inv',
+  catppuccin: 'catppuccin',
 };
 const THEME_ALIASES = {
   tokyo: 'cyan', 'tokyo-night': 'cyan', tokyonight: 'cyan',
-  cat: 'vapor', catppuccin: 'vapor', dr: 'synth', dracula: 'synth',
+  cat: 'catppuccin', catppuccin: 'catppuccin', dr: 'synth', dracula: 'synth',
   gru: 'amber', gruvbox: 'amber', phosphor: 'green', ice: 'cyan',
   ibm: 'mono', 'ibm5151': 'mono', 'ibm-5151': 'mono',
   synthwave: 'synth', vaporwave: 'vapor', 'dos-blue': 'dos',
