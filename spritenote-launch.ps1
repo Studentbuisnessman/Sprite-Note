@@ -8,8 +8,15 @@ $ErrorActionPreference = 'Stop'
 $AppDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Perfil persistente de Chromium/Chrome/Edge para Spritenote.
-$DataDir = Join-Path $env:LOCALAPPDATA 'Spritenote\ChromiumProfile'
+# Vive en %APPDATA% (datos de roaming) para que sobreviva reinstalaciones.
+$DataDir = Join-Path $env:APPDATA 'Spritenote\ChromiumProfile'
 New-Item -ItemType Directory -Force -Path $DataDir | Out-Null
+
+# Migrar perfil antiguo de %LOCALAPPDATA% si existe y el nuevo destino esta vacio.
+$OldDataDir = Join-Path $env:LOCALAPPDATA 'Spritenote\ChromiumProfile'
+if ((Test-Path $OldDataDir) -and -not (Test-Path (Join-Path $DataDir 'Default'))) {
+  try { Move-Item -Path $OldDataDir -Destination $DataDir -Force } catch {}
+}
 
 function Get-SafeCimInstance {
   param([string]$ClassName)
