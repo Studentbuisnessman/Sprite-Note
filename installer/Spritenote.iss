@@ -63,6 +63,7 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "Crear acceso directo en el &Escritorio"; GroupDescription: "Iconos adicionales:"; Flags: unchecked
+Name: "deletedata"; Description: "Eliminar todos mis datos al desinstalar (notas, tareas, habitos)"; GroupDescription: "Al desinstalar:"; Flags: unchecked
 
 [Files]
 ; Codigo fuente de la aplicacion
@@ -88,6 +89,8 @@ Name: "{userdesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; IconFilename:
 Filename: "{app}\{#AppExeName}"; Description: "Iniciar {#AppName} ahora"; Flags: nowait postinstall skipifsilent shellexec
 
 [UninstallDelete]
-; Limpiar el perfil de Chromium que crea la app al ejecutarse
-Type: filesandordirs; Name: "{localappdata}\{#AppDataDir}\ChromiumProfile"
-Type: dirifempty;     Name: "{localappdata}\{#AppDataDir}"
+; Los datos del usuario (notas, tareas, habitos) se conservan por defecto en:
+;   %APPDATA%\Spritenote\ChromiumProfile
+; Solo se eliminan si el usuario marco "Eliminar todos mis datos" durante la instalacion.
+Type: filesandordirs; Name: "{userappdata}\{#AppDataDir}\ChromiumProfile"; Tasks: deletedata
+Type: dirifempty;     Name: "{userappdata}\{#AppDataDir}"; Tasks: deletedata
